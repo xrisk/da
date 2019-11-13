@@ -42,7 +42,7 @@ def generate_ticket():
 
 def cancel_ticket():
     tno = input("Enter ticket number: ")
-    sql = "delete frm ticket where ticket_number = %s"
+    sql = "delete from ticket where ticket_number = %s"
     try:
         with connection.cursor() as cur:
             cur.execute(sql, (tno,))
