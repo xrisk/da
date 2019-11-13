@@ -352,6 +352,38 @@ def list_platforms():
         print(e)
 
 
+def init_schema():
+    pass
+
+
+def check_ticket():
+    try:
+        tno = input("Enter ticket number: ")
+        eno = input("Enter ticket checker id number: ")
+        with connection.cursor() as cur:
+            cur.execute("insert into checked_by values (%s, %s, curdate())", (eno, tno))
+    except Exception as e:
+        print(e)
+
+
+def view_checked():
+    try:
+        with connection.cursor() as cur:
+            cur.execute(
+                "select employee_id, ticket_number, cast(time_checked as char) from checked_by"
+            )
+            for row in cur.fetchall():
+                print(row)
+    except Exception as e:
+        print(e)
+
+
+def ticket_checker_view():
+    menu = {"Check tickets": check_ticket, "View list of checked tickets": view_checked}
+    while render_menu(menu):
+        pass
+
+
 def entry():
     print("Choose a user type:")
     menu = {
@@ -359,6 +391,7 @@ def entry():
         "Ticket Counter": ticket_counter_view,
         "Station Master": station_master_view,
         "Cleaning Staff": cleaning_staff_view,
+        "Ticket Checker": ticket_checker_view,
         "Add platform": add_platform,
         "show platforms": list_platforms,
         "Add building": add_building,

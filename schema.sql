@@ -82,13 +82,13 @@ create table time_table (
 
 create table checked_by (
     employee_id int,
-    building_id int,
+    ticket_number int,
     time_checked timestamp,
 
-    primary key (employee_id, building_id),
-    foreign key (employee_id) references employee(employee_id)
+    primary key (employee_id, ticket_number),
+    foreign key (employee_id) references ticket_checker(employee_id)
         on delete restrict on update cascade,
-    foreign key (building_id) references building(building_id)
+    foreign key (ticket_number) references ticket(ticket_number)
         on delete restrict on update cascade
 );
 

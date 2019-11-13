@@ -74,12 +74,12 @@ DROP TABLE IF EXISTS `checked_by`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `checked_by` (
   `employee_id` int(11) NOT NULL,
-  `building_id` int(11) NOT NULL,
+  `ticket_number` int(11) NOT NULL,
   `time_checked` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`employee_id`,`building_id`),
-  KEY `building_id` (`building_id`),
-  CONSTRAINT `checked_by_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `checked_by_ibfk_2` FOREIGN KEY (`building_id`) REFERENCES `building` (`building_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  PRIMARY KEY (`employee_id`,`ticket_number`),
+  KEY `ticket_number` (`ticket_number`),
+  CONSTRAINT `checked_by_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `ticket_checker` (`employee_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `checked_by_ibfk_2` FOREIGN KEY (`ticket_number`) REFERENCES `ticket` (`ticket_number`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -89,6 +89,7 @@ CREATE TABLE `checked_by` (
 
 LOCK TABLES `checked_by` WRITE;
 /*!40000 ALTER TABLE `checked_by` DISABLE KEYS */;
+INSERT INTO `checked_by` VALUES (6,1,'2019-11-12 18:30:00'),(6,2,'2019-11-12 18:30:00');
 /*!40000 ALTER TABLE `checked_by` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,7 +125,7 @@ DROP TABLE IF EXISTS `employee`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
   `employee_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8mb4_general_ci,
+  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `salary` int(11) DEFAULT NULL,
   `dob` date DEFAULT NULL,
   `works_in_building` int(11) DEFAULT NULL,
@@ -134,7 +135,7 @@ CREATE TABLE `employee` (
   KEY `manager_id` (`manager_id`),
   CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`works_in_building`) REFERENCES `building` (`building_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `employee_ibfk_2` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +144,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (2,'fubar',1000,'2000-01-01',NULL,NULL),(4,'E2',500,'2000-01-02',NULL,2),(5,'Akshay',1000,'1998-01-01',NULL,2);
+INSERT INTO `employee` VALUES (2,'fubar',1000,'2000-01-01',NULL,NULL),(4,'E2',500,'2000-01-02',NULL,2),(5,'Akshay',1000,'1998-01-01',NULL,2),(6,'abcdef',2000,'2000-01-02',NULL,2);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +168,6 @@ CREATE TABLE `engineer` (
 
 LOCK TABLES `engineer` WRITE;
 /*!40000 ALTER TABLE `engineer` DISABLE KEYS */;
-INSERT INTO `engineer` VALUES (5);
 /*!40000 ALTER TABLE `engineer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,7 @@ CREATE TABLE `manager` (
 
 LOCK TABLES `manager` WRITE;
 /*!40000 ALTER TABLE `manager` DISABLE KEYS */;
-INSERT INTO `manager` VALUES (2);
+INSERT INTO `manager` VALUES (2),(5);
 /*!40000 ALTER TABLE `manager` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -252,7 +252,7 @@ DROP TABLE IF EXISTS `passenger`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `passenger` (
   `passenger_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sex` enum('F','M','O') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sex` enum('F','M','O') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`passenger_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -327,7 +327,7 @@ DROP TABLE IF EXISTS `ticket`;
 CREATE TABLE `ticket` (
   `train_number` int(11) DEFAULT NULL,
   `ticket_number` int(11) NOT NULL AUTO_INCREMENT,
-  `berth` enum('L','U','M') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `berth` enum('L','U','M') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `coach` int(11) DEFAULT NULL,
   `journey_date` date DEFAULT NULL,
   `cost` int(11) DEFAULT NULL,
@@ -367,6 +367,7 @@ CREATE TABLE `ticket_checker` (
 
 LOCK TABLES `ticket_checker` WRITE;
 /*!40000 ALTER TABLE `ticket_checker` DISABLE KEYS */;
+INSERT INTO `ticket_checker` VALUES (6);
 /*!40000 ALTER TABLE `ticket_checker` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -456,8 +457,8 @@ DROP TABLE IF EXISTS `train`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `train` (
   `train_number` int(11) NOT NULL,
-  `train_name` text COLLATE utf8mb4_general_ci,
-  `train_type` enum('superfast','local','express') COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `train_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `train_type` enum('superfast','local','express') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `num_coach` int(11) DEFAULT NULL,
   `last_maintenance` date DEFAULT NULL,
   PRIMARY KEY (`train_number`)
@@ -483,7 +484,7 @@ DROP TABLE IF EXISTS `usable_by`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usable_by` (
   `platform_id` int(11) NOT NULL,
-  `train_type` enum('local','superfast','express') COLLATE utf8mb4_general_ci NOT NULL,
+  `train_type` enum('local','superfast','express') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`platform_id`,`train_type`),
   CONSTRAINT `usable_by_ibfk_1` FOREIGN KEY (`platform_id`) REFERENCES `platform` (`platform_no`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -507,4 +508,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-13  7:44:53
+-- Dump completed on 2019-11-13  9:50:46
