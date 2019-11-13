@@ -231,17 +231,22 @@ def view_employees():
 
 
 def change_employee_type():
-    eid = input("enter employee id: ")
-    new = input(
-        "enter new employee role: (manager/engineer/cleaning_staff/station_master/ticket_checker)"
-    )
-    if new not in etypes:
-        print("invalid employee type")
-        return
-    with connection.cursor() as cur:
-        for table in etypes:
-            cur.execute("delete from {} where employee_id = %s".format(table), (eid,))
-        cur.execute("insert into {} values (%s)".format(new), (eid,))
+    try:
+        eid = input("enter employee id: ")
+        new = input(
+            "enter new employee role: (manager/engineer/cleaning_staff/station_master/ticket_checker)"
+        )
+        if new not in etypes:
+            print("invalid employee type")
+            return
+        with connection.cursor() as cur:
+            for table in etypes:
+                cur.execute(
+                    "delete from {} where employee_id = %s".format(table), (eid,)
+                )
+            cur.execute("insert into {} values (%s)".format(new), (eid,))
+    except Exception as e:
+        print(e)
 
 
 def manager_view():
